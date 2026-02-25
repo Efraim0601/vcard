@@ -55,12 +55,20 @@ export class ViewCardComponent implements OnInit {
 
   saveContact(): void {
     const c = this.card();
-    if (!c) return;
+    if (!c) {
+      this.toast.error('Carte non chargée. Réessayez.');
+      return;
+    }
     if (this.isSaved()) {
       this.toast.info('Ce contact est déjà enregistré');
       return;
     }
-    this.vcard.addToPhoneContact(c);
+    this.toast.info('Enregistrement en cours...');
+    try {
+      this.vcard.addToPhoneContact(c);
+    } catch (e) {
+      this.toast.error('Impossible de préparer le fichier contact.');
+    }
     this.cardApi.saveContact(c.id).subscribe({
       next: () => {
         this.isSaved.set(true);

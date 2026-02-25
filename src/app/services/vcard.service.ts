@@ -9,13 +9,15 @@ export class VcardService {
   }
 
   generateVCard(card: BusinessCard): string {
+    const fn = String(card?.fullName ?? '').trim() || 'Contact';
+    const namePart = fn.split(/\s+/).filter(Boolean).reverse().map((s) => this.escape(s)).join(';');
     const lines = [
       'BEGIN:VCARD',
       'VERSION:3.0',
-      `FN:${this.escape(card.fullName)}`,
-      `N:${card.fullName.split(/\s+/).reverse().map(this.escape).join(';')};;;`,
-      `TITLE:${this.escape(card.title)}`,
-      `ORG:${this.escape(card.company)}`,
+      `FN:${this.escape(fn)}`,
+      `N:${namePart};;;`,
+      `TITLE:${this.escape(String(card?.title ?? ''))}`,
+      `ORG:${this.escape(String(card?.company ?? ''))}`,
     ];
     if (card.mobile) lines.push(`TEL;TYPE=CELL:${card.mobile.replace(/\s/g, '')}`);
     if (card.office) lines.push(`TEL;TYPE=WORK:${card.office.replace(/\s/g, '')}`);
@@ -26,7 +28,8 @@ export class VcardService {
   }
 
   getVCardFileName(card: BusinessCard): string {
-    return `${card.fullName.replace(/\s+/g, '_').replace(/[^\w\-_.]/g, '')}.vcf`;
+    const name = String(card?.fullName ?? 'contact').replace(/\s+/g, '_').replace(/[^\w\-_.]/g, '');
+    return `${name || 'contact'}.vcf`;
   }
 
   /**
@@ -60,11 +63,14 @@ export class VcardService {
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
+      a.setAttribute('rel', 'noopener');
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 2000);
     } else {
       this.downloadVCard(card);
     }
