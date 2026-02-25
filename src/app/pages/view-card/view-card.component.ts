@@ -60,12 +60,13 @@ export class ViewCardComponent implements OnInit {
       this.toast.info('Ce contact est déjà enregistré');
       return;
     }
+    this.vcard.addToPhoneContact(c);
     this.cardApi.saveContact(c.id).subscribe({
       next: () => {
         this.isSaved.set(true);
-        this.toast.success('Contact enregistré avec succès');
+        this.toast.success('Contact enregistré. Sur mobile : ouvrez le fichier .vcf pour l\'ajouter à vos contacts.');
       },
-      error: () => this.toast.error('Erreur lors de l\'enregistrement'),
+      error: () => this.toast.error('Erreur lors de l\'enregistrement dans l\'app. Le fichier contact a été téléchargé : ouvrez-le pour l\'ajouter à votre téléphone.'),
     });
   }
 
