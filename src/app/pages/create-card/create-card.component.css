@@ -1,0 +1,52 @@
+.create-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.text-slate-600 { color: #475569; }
+
+.create-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.create-num {
+  width: 2rem;
+  height: 2rem;
+  background: #dbeafe;
+  color: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.create-btn-save {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.create-btn-save:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.create-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.create-modal-content {
+  max-width: 28rem;
+  width: 100%;
+  background: transparent;
+}

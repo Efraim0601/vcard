@@ -1,0 +1,17 @@
+.text-slate-300 { color: #cbd5e1; }
+.text-slate-600 { color: #475569; }
+.text-slate-900 { color: #0f172a; }
+
+.notfound-max {
+  max-width: 28rem;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}

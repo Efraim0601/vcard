@@ -1,0 +1,100 @@
+<div class="vcard-page">
+  <div class="vcard-container px-4 py-4">
+    <!-- Back + title -->
+    <div class="mb-4">
+      <a [routerLink]="isEditing() ? ['/dashboard'] : ['/']" class="btn btn-link text-dark text-decoration-none p-0 mb-3 d-inline-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Retour
+      </a>
+      <h1 class="create-title mb-2">
+        {{ isEditing() ? 'Modifier ma carte' : 'Créer ma carte' }}
+      </h1>
+      <p class="text-slate-600 mb-0">
+        {{ isEditing() ? 'Mettez à jour vos informations professionnelles' : 'Remplissez vos informations en quelques secondes' }}
+      </p>
+    </div>
+
+    <!-- Preview modal -->
+    @if (showPreview() && canPreview()) {
+      <div class="create-modal-backdrop" (click)="closePreview()">
+        <div class="create-modal-content rounded-3 shadow" (click)="$event.stopPropagation()">
+          <div class="bg-white rounded-3 p-4 mb-3">
+            <p class="text-center text-slate-600 mb-0">
+              C'est ce que verra la personne qui scanne votre QR code
+            </p>
+          </div>
+          <app-card-preview [card]="previewCard()" />
+          <button type="button" class="btn btn-outline-secondary w-100 mt-3" (click)="closePreview()">
+            Fermer l'aperçu
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Form card -->
+    <div class="card border-0 shadow rounded-3 p-4">
+      <!-- Section 1 -->
+      <div class="mb-4">
+        <h2 class="create-section-title d-flex align-items-center gap-2 mb-3">
+          <span class="create-num rounded-2">1</span>
+          Identité professionnelle
+        </h2>
+        <div class="mb-3">
+          <label for="fullName" class="form-label">Nom complet <span class="text-danger">*</span></label>
+          <input id="fullName" type="text" class="form-control" placeholder="Jean Dupont"
+            [ngModel]="formData().fullName" (ngModelChange)="update('fullName', $event)" />
+        </div>
+        <div class="mb-3">
+          <label for="title" class="form-label">Fonction / Titre <span class="text-danger">*</span></label>
+          <input id="title" type="text" class="form-control" placeholder="Directeur Financier"
+            [ngModel]="formData().title" (ngModelChange)="update('title', $event)" />
+        </div>
+        <div class="mb-3">
+          <label for="company" class="form-label">Entreprise <span class="text-danger">*</span></label>
+          <input id="company" type="text" class="form-control" placeholder="Banque Nationale"
+            [ngModel]="formData().company" (ngModelChange)="update('company', $event)" />
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="mb-4">
+        <h2 class="create-section-title d-flex align-items-center gap-2 mb-3">
+          <span class="create-num rounded-2">2</span>
+          Coordonnées
+        </h2>
+        <div class="mb-3">
+          <label for="mobile" class="form-label">Mobile</label>
+          <input id="mobile" type="tel" class="form-control" placeholder="+33 6 12 34 56 78"
+            [ngModel]="formData().mobile" (ngModelChange)="update('mobile', $event)" />
+        </div>
+        <div class="mb-3">
+          <label for="office" class="form-label">Téléphone bureau</label>
+          <input id="office" type="tel" class="form-control" placeholder="+33 1 23 45 67 89"
+            [ngModel]="formData().office" (ngModelChange)="update('office', $event)" />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" class="form-control" placeholder="jean.dupont@banque.fr"
+            [ngModel]="formData().email" (ngModelChange)="update('email', $event)" />
+        </div>
+        <div class="mb-3">
+          <label for="website" class="form-label">Site web</label>
+          <input id="website" type="url" class="form-control" placeholder="www.banque.fr"
+            [ngModel]="formData().website" (ngModelChange)="update('website', $event)" />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary flex-grow-1 d-inline-flex align-items-center justify-content-center" (click)="openPreview()" [disabled]="!canPreview()">
+          <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          Aperçu
+        </button>
+        <button type="button" class="btn btn-primary flex-grow-1 create-btn-save d-inline-flex align-items-center justify-content-center" (click)="save()" [disabled]="!canPreview()">
+          <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          {{ isEditing() ? 'Mettre à jour' : 'Enregistrer et générer' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

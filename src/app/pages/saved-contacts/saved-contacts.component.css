@@ -1,0 +1,69 @@
+.saved-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.text-slate-600 { color: #475569; }
+.text-slate-500 { color: #64748b; }
+.text-slate-900 { color: #0f172a; }
+
+.saved-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.saved-search-input {
+  padding-left: 2.5rem !important;
+  background: #fff;
+}
+
+.saved-empty-icon {
+  width: 5rem;
+  height: 5rem;
+  background: #f1f5f9;
+  font-size: 2.5rem;
+}
+
+.saved-empty-text {
+  max-width: 28rem;
+}
+
+.saved-contact-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.saved-contact-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.saved-contact-name:hover {
+  color: #2563eb !important;
+}
+
+.saved-email-badge {
+  max-width: 200px;
+}
+
+.saved-delete-btn {
+  opacity: 0.7;
+}
+
+.saved-contact-card:hover .saved-delete-btn {
+  opacity: 1;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}

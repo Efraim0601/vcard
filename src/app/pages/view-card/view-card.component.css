@@ -1,0 +1,73 @@
+.text-slate-600 { color: #475569; }
+.text-slate-500 { color: #64748b; }
+.text-slate-900 { color: #0f172a; }
+
+.view-loading-spinner svg {
+  color: #2563eb;
+  animation: view-spin 1s linear infinite;
+}
+
+@keyframes view-spin {
+  to { transform: rotate(360deg); }
+}
+
+.view-error-icon {
+  width: 5rem;
+  height: 5rem;
+  background: #fee2e2;
+  font-size: 2.5rem;
+}
+
+.view-error-max {
+  max-width: 28rem;
+}
+
+.view-preview-banner {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.view-preview-banner strong {
+  color: #1e3a8a;
+}
+
+.view-action-btn {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+}
+
+.view-action-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: #dbeafe;
+  color: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-action-icon-inverse {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.view-btn-saved {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: #fff;
+}
+
+.view-btn-saved:disabled {
+  opacity: 1;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}

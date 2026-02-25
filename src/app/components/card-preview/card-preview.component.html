@@ -1,0 +1,55 @@
+<div class="card-preview" [class]="className()">
+  <div class="card-preview-watermark" aria-hidden="true"></div>
+
+  <header class="card-preview-header">
+    <img
+      class="card-preview-logo"
+      src="assets/Logo_Afriland.png"
+      alt=""
+      (error)="$any($event.target).style.display = 'none'"
+    />
+  </header>
+
+  <div class="card-preview-body">
+    <h2 class="card-preview-name">{{ card().fullName }}</h2>
+    <p class="card-preview-title">{{ card().title }}</p>
+  </div>
+
+  <div class="card-preview-divider"></div>
+
+  <div class="card-preview-contacts">
+    <div class="card-preview-col card-preview-col-left">
+      @if (card().email) {
+        <a [href]="'mailto:' + card().email" class="card-preview-line">
+          <span class="card-preview-label">E-mail:</span>
+          <span class="card-preview-truncate">{{ card().email }}</span>
+        </a>
+      }
+      @if (card().website) {
+        <a [href]="normalizedWebsite(card().website!)" target="_blank" rel="noopener noreferrer" class="card-preview-line">
+          <span class="card-preview-label">Site Web:</span>
+          <span class="card-preview-truncate">{{ card().website }}</span>
+        </a>
+      }
+    </div>
+    <div class="card-preview-col card-preview-col-right">
+      @if (card().office) {
+        <a [href]="'tel:' + card().office" class="card-preview-line">
+          <span class="card-preview-label">Tél:</span>
+          <span>{{ card().office }}</span>
+        </a>
+      }
+      @if (card().mobile) {
+        <a [href]="'tel:' + card().mobile" class="card-preview-line">
+          <span class="card-preview-label">Mob:</span>
+          <span>{{ card().mobile }}</span>
+        </a>
+      }
+    </div>
+  </div>
+
+  <footer class="card-preview-footer">
+    <div class="card-preview-footer-line"></div>
+    <span class="card-preview-footer-text">Carte de visite numérique</span>
+  </footer>
+</div>

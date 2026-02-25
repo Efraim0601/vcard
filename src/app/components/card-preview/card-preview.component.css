@@ -1,0 +1,135 @@
+/* Design type Afriland First Bank : fond blanc, logo, deux colonnes, accents rouges */
+.card-preview {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+  padding: 1.5rem 1.5rem 1.25rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  max-width: 420px;
+  overflow: hidden;
+}
+
+/* Motif discret type losanges (droite) */
+.card-preview-watermark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 140px;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.02) 8px,
+    rgba(0, 0, 0, 0.02) 9px
+  );
+  pointer-events: none;
+}
+
+/* En-tête : logo uniquement */
+.card-preview-header {
+  margin-bottom: 1.25rem;
+}
+
+.card-preview-logo {
+  display: block;
+  height: 88px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* Nom et titre */
+.card-preview-body {
+  margin-bottom: 1rem;
+}
+
+.card-preview-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.card-preview-title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #374151;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-preview-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.9rem 0 1rem;
+}
+
+/* Deux colonnes : gauche (E-mail, Site Web) / droite (Tél, Mob) */
+.card-preview-contacts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5rem;
+  align-items: start;
+}
+
+.card-preview-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.card-preview-col-right {
+  padding-left: 0.25rem;
+}
+
+.card-preview-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #1f2937;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.card-preview-line:hover {
+  color: #1e3a5f;
+}
+
+.card-preview-label {
+  font-weight: 600;
+  color: #1f2937;
+  flex-shrink: 0;
+}
+
+.card-preview-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+/* Pied : ligne rouge + texte */
+.card-preview-footer {
+  margin-top: 1.1rem;
+  padding-top: 0.6rem;
+}
+
+.card-preview-footer-line {
+  height: 2px;
+  background: #b91c1c;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.card-preview-footer-text {
+  font-size: 0.68rem;
+  color: #6b7280;
+  letter-spacing: 0.03em;
+}
