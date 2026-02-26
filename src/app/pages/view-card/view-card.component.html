@@ -60,11 +60,11 @@
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/></svg>
                 }
               </span>
-              <span>{{ isSaved() ? 'Déjà enregistré' : 'Enregistrer dans le téléphone' }}</span>
+              <span>{{ isSaved() ? 'Déjà enregistré' : 'Ajouter aux contacts' }}</span>
             </button>
           </div>
         </div>
-        <p class="text-center text-slate-500 small mb-0 mt-2">Sur mobile : le fichier .vcf s’ouvre pour ajouter le contact à votre répertoire.</p>
+        <p class="text-center text-slate-500 small mb-0 mt-2">Sur mobile : le fichier .vcf s’ouvre pour ajouter le contact à votre téléphone (sans téléchargement).</p>
       }
 
       @if (isPreview()) {

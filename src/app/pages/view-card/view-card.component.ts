@@ -64,18 +64,18 @@ export class ViewCardComponent implements OnInit {
       return;
     }
     this.toast.info('Enregistrement en cours...');
-    try {
-      this.vcard.addToPhoneContact(c);
-    } catch (e) {
-      this.toast.error('Impossible de préparer le fichier contact.');
-    }
     this.cardApi.saveContact(c.id).subscribe({
       next: () => {
         this.isSaved.set(true);
-        this.toast.success('Contact enregistré. Sur mobile : ouvrez le fichier .vcf pour l\'ajouter à vos contacts.');
+        this.toast.success('Contact enregistré dans l\'app.');
       },
-      error: () => this.toast.error('Erreur lors de l\'enregistrement dans l\'app. Le fichier contact a été téléchargé : ouvrez-le pour l\'ajouter à votre téléphone.'),
+      error: () => this.toast.error('Erreur lors de l\'enregistrement dans l\'app.'),
     });
+    try {
+      this.vcard.addToPhoneContact(c);
+    } catch (e) {
+      this.toast.error('Impossible d\'ouvrir l\'ajout au répertoire.');
+    }
   }
 
   download(): void {

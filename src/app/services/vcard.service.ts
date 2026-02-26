@@ -50,27 +50,21 @@ export class VcardService {
   }
 
   /**
-   * Provoque l’ajout du contact dans le téléphone (mobile et desktop).
-   * Sur mobile, ouvre le .vcf de façon à ce que l’OS propose « Ajouter aux contacts ».
+   * Ouvre directement l’invite « Ajouter aux contacts » du téléphone (mobile)
+   * ou télécharge le .vcf (desktop).
+   * Sur mobile : navigation vers le .vcf pour que l’OS affiche tout de suite la boîte
+   * « Ajouter aux contacts » sans passer par le dossier Téléchargements.
    */
   addToPhoneContact(card: BusinessCard): void {
     const vcard = this.generateVCard(card);
-    const fileName = this.getVCardFileName(card);
 
     if (this.isMobile()) {
       const blob = new Blob(['\ufeff' + vcard], { type: 'text/vcard;charset=utf-8' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.setAttribute('rel', 'noopener');
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 2000);
+      // Navigation vers le .vcf : l’OS ouvre directement « Ajouter aux contacts »
+      // (pas de téléchargement puis ouverture manuelle du fichier).
+      window.location.href = url;
+      // Ne pas révoquer l’URL : la page charge le vcf, le navigateur la garde en mémoire.
     } else {
       this.downloadVCard(card);
     }
