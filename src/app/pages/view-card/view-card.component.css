@@ -71,3 +71,27 @@
   background: #1d4ed8;
   border-color: #1d4ed8;
 }
+
+/* Conteneur de la carte : centré, marge réduite sur mobile pour meilleure visibilité */
+.view-card-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0 0.25rem;
+}
+
+/* Pour l’export image : largeur fixe pour un PNG lisible */
+.view-card-preview-wrapper.exporting {
+  width: 380px;
+  min-width: 380px;
+  margin: 0 auto;
+}
+.view-card-preview-wrapper.exporting .card-preview {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Padding responsive pour ne pas serrer la carte sur mobile */
+.view-card-container {
+  padding-left: clamp(0.75rem, 4vw, 1.5rem);
+  padding-right: clamp(0.75rem, 4vw, 1.5rem);
+}

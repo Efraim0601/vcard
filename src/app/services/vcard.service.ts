@@ -33,6 +33,24 @@ export class VcardService {
   }
 
   /**
+   * Retourne une data URL du vCard (comme qr-business-card).
+   * Sur mobile, ouvrir cette URL ouvre directement l'écran « Ajouter aux contacts » sans fichier.
+   */
+  getVCardDataUrl(card: BusinessCard): string {
+    const vcard = '\ufeff' + this.generateVCard(card);
+    const base64 = btoa(unescape(encodeURIComponent(vcard)));
+    return `data:text/vcard;charset=utf-8;base64,${base64}`;
+  }
+
+  /**
+   * Retourne le vCard en texte brut (pour l’encoder dans un QR comme qr-business-card).
+   * Au scan, le téléphone ouvre directement l’écran d’enregistrement du contact.
+   */
+  getVCardRaw(card: BusinessCard): string {
+    return this.generateVCard(card);
+  }
+
+  /**
    * Télécharge le vCard (desktop). Sur mobile, préférer addToPhoneContact().
    */
   downloadVCard(card: BusinessCard): void {
@@ -54,21 +72,18 @@ export class VcardService {
    * Sinon ouvre l’invite « Ajouter aux contacts » ou télécharge le .vcf (desktop).
    */
   addToPhoneContact(card: BusinessCard): void {
-    const vcard = this.generateVCard(card);
-    const fileName = this.getVCardFileName(card);
-    const blob = new Blob(['\ufeff' + vcard], { type: 'text/vcard;charset=utf-8' });
-
-    if (this.isMobile() && this.canShareFile(blob, fileName)) {
-      const file = new File([blob], fileName, { type: 'text/vcard;charset=utf-8' });
-      navigator.share({
-        title: card.fullName,
-        text: `${card.title} – ${card.company}`,
-        files: [file],
-      }).catch(() => this.fallbackAddToPhoneContact(blob));
-      return;
-    }
-
     if (this.isMobile()) {
+      const dataUrl = this.getVCardDataUrl(card);
+      if (dataUrl.length <= 65536) {
+        window.location.href = dataUrl;
+        return;
+      }
+      const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
+      if (this.canShareFile(blob, this.getVCardFileName(card))) {
+        const file = new File([blob], this.getVCardFileName(card), { type: 'text/vcard;charset=utf-8' });
+        navigator.share({ title: card.fullName, text: `${card.title} – ${card.company}`, files: [file] }).catch(() => this.fallbackAddToPhoneContact(blob));
+        return;
+      }
       this.fallbackAddToPhoneContact(blob);
     } else {
       this.downloadVCard(card);
@@ -82,8 +97,7 @@ export class VcardService {
   }
 
   private fallbackAddToPhoneContact(blob: Blob): void {
-    const url = URL.createObjectURL(blob);
-    window.location.href = url;
+    window.location.href = URL.createObjectURL(blob);
   }
 
   /**
@@ -92,7 +106,7 @@ export class VcardService {
   async exportCardAsImage(cardElement: HTMLElement, cardName: string): Promise<void> {
     const { default: html2canvas } = await import('html2canvas');
     const canvas = await html2canvas(cardElement, {
-      scale: 2,
+      scale: 2.5,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',

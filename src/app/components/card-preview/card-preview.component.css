@@ -1,13 +1,16 @@
-/* Design type Afriland First Bank : fond blanc, logo, deux colonnes, accents rouges */
+/* Design type Afriland : fond blanc, logo, deux colonnes, accents rouges – optimisé mobile */
 .card-preview {
   position: relative;
   background: #fff;
   border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  padding: 1.5rem 1.5rem 1.25rem;
+  border-radius: 8px;
+  padding: clamp(0.75rem, 4vw, 1.5rem);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  min-width: 280px;
   max-width: 420px;
-  overflow: hidden;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 /* Motif discret type losanges (droite) */
@@ -15,7 +18,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 140px;
+  width: min(140px, 35vw);
   height: 100%;
   background-image: repeating-linear-gradient(
     45deg,
@@ -25,63 +28,80 @@
     rgba(0, 0, 0, 0.02) 9px
   );
   pointer-events: none;
+  border-radius: 0 8px 8px 0;
 }
 
-/* En-tête : logo uniquement */
+/* En-tête : logo */
 .card-preview-header {
-  margin-bottom: 1.25rem;
+  margin-bottom: clamp(0.75rem, 3vw, 1.25rem);
 }
 
 .card-preview-logo {
   display: block;
-  height: 88px;
+  height: clamp(56px, 12vw, 88px);
   width: auto;
-  max-width: 200px;
+  max-width: min(200px, 55vw);
   object-fit: contain;
   object-position: left center;
 }
 
-/* Nom et titre */
+/* Nom et titre – tout visible */
 .card-preview-body {
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.5rem, 2vw, 1rem);
 }
 
 .card-preview-name {
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 4.5vw, 1.4rem);
   font-weight: 700;
   color: #1e3a5f;
-  margin: 0 0 0.4rem 0;
-  line-height: 1.2;
+  margin: 0 0 0.35rem 0;
+  line-height: 1.25;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .card-preview-title {
-  font-size: 0.875rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.875rem);
   font-weight: 400;
   color: #374151;
   margin: 0;
   line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .card-preview-divider {
   height: 1px;
   background: #e5e7eb;
-  margin: 0.9rem 0 1rem;
+  margin: clamp(0.6rem, 2vw, 0.9rem) 0 clamp(0.75rem, 2.5vw, 1rem);
 }
 
-/* Deux colonnes : gauche (E-mail, Site Web) / droite (Tél, Mob) */
+/* Deux colonnes sur grand écran, une colonne sur petit pour tout afficher */
 .card-preview-contacts {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 1.5rem;
+  gap: clamp(0.5rem, 2vw, 0.6rem) clamp(0.75rem, 4vw, 1.5rem);
   align-items: start;
+}
+
+@media (max-width: 380px) {
+  .card-preview-contacts {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .card-preview-col-right {
+    padding-left: 0;
+  }
 }
 
 .card-preview-col {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
 }
 
 .card-preview-col-right {
@@ -92,10 +112,12 @@
   display: flex;
   align-items: baseline;
   gap: 0.3rem;
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 2.2vw, 0.8rem);
   color: #1f2937;
   text-decoration: none;
   transition: color 0.15s;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .card-preview-line:hover {
@@ -108,28 +130,30 @@
   flex-shrink: 0;
 }
 
+/* E-mail et site web : retour à la ligne pour tout afficher (plus de troncature) */
 .card-preview-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 160px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  flex: 1;
 }
 
 /* Pied : ligne rouge + texte */
 .card-preview-footer {
-  margin-top: 1.1rem;
-  padding-top: 0.6rem;
+  margin-top: clamp(0.75rem, 2.5vw, 1.1rem);
+  padding-top: 0.5rem;
 }
 
 .card-preview-footer-line {
   height: 2px;
   background: #b91c1c;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   width: 100%;
 }
 
 .card-preview-footer-text {
-  font-size: 0.68rem;
+  font-size: clamp(0.6rem, 1.8vw, 0.68rem);
   color: #6b7280;
   letter-spacing: 0.03em;
 }
+

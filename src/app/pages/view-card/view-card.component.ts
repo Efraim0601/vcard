@@ -96,10 +96,14 @@ export class ViewCardComponent implements OnInit {
     }
     try {
       this.toast.info('Génération de l\'image...');
+      el.classList.add('exporting');
+      await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
       await this.vcard.exportCardAsImage(el, c.fullName);
       this.toast.success('Image de la carte téléchargée');
     } catch (e) {
       this.toast.error('Impossible de générer l\'image.');
+    } finally {
+      el.classList.remove('exporting');
     }
   }
 }
