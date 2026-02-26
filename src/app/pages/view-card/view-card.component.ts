@@ -24,12 +24,7 @@ export class ViewCardComponent implements OnInit {
   route = inject(ActivatedRoute);
   isPreview = computed(() => this.route.snapshot.queryParamMap.get('preview') === 'true');
 
-  /** Lien direct vers le vCard (data URL) : au clic, l'OS ouvre « Ajouter aux contacts » sans télécharger de fichier. */
-  addToContactsUrl = computed(() => {
-    const c = this.card();
-    if (!c || this.isSaved()) return '';
-    return this.vcard.isDataUrlSafeForLink(c) ? this.vcard.getVCardDataUrl(c) : '';
-  });
+  addingContact = signal(false);
 
   constructor(
     private router: Router,
@@ -62,20 +57,29 @@ export class ViewCardComponent implements OnInit {
     });
   }
 
-  /** Fallback quand la data URL est trop longue : ouvre le vCard (sans blob). */
+  /**
+   * Ajouter aux contacts : privilégie le partage (menu système → Contacts) pour éviter
+   * le téléchargement et l'alerte « Impossible de télécharger le fichier de façon sécurisée ».
+   */
+  async addToContacts(): Promise<void> {
+    const c = this.card();
+    if (!c || this.isSaved()) return;
+    this.addingContact.set(true);
+    try {
+      this.cardApi.saveContact(c.id).subscribe({
+        next: () => this.isSaved.set(true),
+        error: () => {},
+      });
+      const shared = await this.vcard.shareVCard(c);
+      if (!shared) this.vcard.addToPhoneContact(c);
+    } finally {
+      this.addingContact.set(false);
+    }
+  }
+
   addToPhoneContact(): void {
     const c = this.card();
     if (c) this.vcard.addToPhoneContact(c);
-  }
-
-  /** Enregistre le contact dans l'app (backend) ; appelé au clic sur le lien « Ajouter aux contacts » avant navigation. */
-  onAddToContactsClick(): void {
-    const c = this.card();
-    if (!c || this.isSaved()) return;
-    this.cardApi.saveContact(c.id).subscribe({
-      next: () => this.isSaved.set(true),
-      error: () => {},
-    });
   }
 
   download(): void {

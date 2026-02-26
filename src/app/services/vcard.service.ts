@@ -80,6 +80,29 @@ export class VcardService {
    * Même scénario que qr-business-card : ouvre le vCard pour que le téléphone
    * affiche directement l'écran « Ajouter aux contacts » (import direct, pas de fichier).
    */
+  canShareVCard(card: BusinessCard): boolean {
+    if (typeof navigator === 'undefined' || !navigator.share || !navigator.canShare) return false;
+    const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
+    const file = new File([blob], this.getVCardFileName(card), { type: 'text/vcard;charset=utf-8' });
+    return navigator.canShare({ files: [file] });
+  }
+
+  async shareVCard(card: BusinessCard): Promise<boolean> {
+    if (!this.canShareVCard(card)) return false;
+    const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
+    const file = new File([blob], this.getVCardFileName(card), { type: 'text/vcard;charset=utf-8' });
+    try {
+      await navigator.share({
+        files: [file],
+        title: card.fullName || 'Contact',
+        text: 'Carte de visite',
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   addToPhoneContact(card: BusinessCard): void {
     const dataUrl = this.getVCardDataUrl(card);
     if (dataUrl.length <= 65536) window.location.href = dataUrl;
