@@ -50,24 +50,64 @@ export class VcardService {
   }
 
   /**
-   * Ouvre directement l’invite « Ajouter aux contacts » du téléphone (mobile)
-   * ou télécharge le .vcf (desktop).
-   * Sur mobile : navigation vers le .vcf pour que l’OS affiche tout de suite la boîte
-   * « Ajouter aux contacts » sans passer par le dossier Téléchargements.
+   * Comportement natif sur mobile : partage vers l’app Contacts (pas de téléchargement de fichier).
+   * Sinon ouvre l’invite « Ajouter aux contacts » ou télécharge le .vcf (desktop).
    */
   addToPhoneContact(card: BusinessCard): void {
     const vcard = this.generateVCard(card);
+    const fileName = this.getVCardFileName(card);
+    const blob = new Blob(['\ufeff' + vcard], { type: 'text/vcard;charset=utf-8' });
+
+    if (this.isMobile() && this.canShareFile(blob, fileName)) {
+      const file = new File([blob], fileName, { type: 'text/vcard;charset=utf-8' });
+      navigator.share({
+        title: card.fullName,
+        text: `${card.title} – ${card.company}`,
+        files: [file],
+      }).catch(() => this.fallbackAddToPhoneContact(blob));
+      return;
+    }
 
     if (this.isMobile()) {
-      const blob = new Blob(['\ufeff' + vcard], { type: 'text/vcard;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      // Navigation vers le .vcf : l’OS ouvre directement « Ajouter aux contacts »
-      // (pas de téléchargement puis ouverture manuelle du fichier).
-      window.location.href = url;
-      // Ne pas révoquer l’URL : la page charge le vcf, le navigateur la garde en mémoire.
+      this.fallbackAddToPhoneContact(blob);
     } else {
       this.downloadVCard(card);
     }
+  }
+
+  private canShareFile(blob: Blob, fileName: string): boolean {
+    if (typeof navigator === 'undefined' || !navigator.share) return false;
+    const file = new File([blob], fileName, { type: blob.type });
+    return navigator.canShare?.({ files: [file] }) ?? false;
+  }
+
+  private fallbackAddToPhoneContact(blob: Blob): void {
+    const url = URL.createObjectURL(blob);
+    window.location.href = url;
+  }
+
+  /**
+   * Génère et télécharge une image PNG du template de la carte (visuel avec les données).
+   */
+  async exportCardAsImage(cardElement: HTMLElement, cardName: string): Promise<void> {
+    const { default: html2canvas } = await import('html2canvas');
+    const canvas = await html2canvas(cardElement, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+    });
+    const fileName = `${(cardName || 'carte').replace(/\s+/g, '_').replace(/[^\w\-_.]/g, '')}_carte.png`;
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png', 1);
   }
 
   private isMobile(): boolean {

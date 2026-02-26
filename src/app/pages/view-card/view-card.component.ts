@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CardApiService } from '../../services/card-api.service';
 import { ToastService } from '../../services/toast.service';
@@ -14,6 +14,8 @@ import type { BusinessCard } from '../../models/business-card';
   styleUrl: './view-card.component.css',
 })
 export class ViewCardComponent implements OnInit {
+  @ViewChild('cardPreviewBox') cardPreviewBox!: ElementRef<HTMLElement>;
+
   card = signal<BusinessCard | null>(null);
   loading = signal(true);
   error = signal(false);
@@ -82,6 +84,22 @@ export class ViewCardComponent implements OnInit {
     const c = this.card();
     if (!c) return;
     this.vcard.downloadVCard(c);
-    this.toast.success('Contact téléchargé');
+    this.toast.success('Fichier contact téléchargé');
+  }
+
+  async downloadCardImage(): Promise<void> {
+    const c = this.card();
+    const el = this.cardPreviewBox?.nativeElement;
+    if (!c || !el) {
+      this.toast.error('Carte non disponible.');
+      return;
+    }
+    try {
+      this.toast.info('Génération de l\'image...');
+      await this.vcard.exportCardAsImage(el, c.fullName);
+      this.toast.success('Image de la carte téléchargée');
+    } catch (e) {
+      this.toast.error('Impossible de générer l\'image.');
+    }
   }
 }

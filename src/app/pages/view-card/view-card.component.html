@@ -39,20 +39,28 @@
         }
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4" #cardPreviewBox>
         <app-card-preview [card]="card()!" />
       </div>
 
       @if (!isPreview()) {
         <div class="row g-3 mb-4">
           <div class="col-12 col-md-6">
-            <button type="button" class="btn btn-outline-secondary w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2" (click)="download()">
-              <span class="view-action-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-              <span>Télécharger (.vcf)</span>
+            <button type="button" class="btn btn-outline-secondary w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2" (click)="downloadCardImage()">
+              <span class="view-action-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+              <span>Image de la carte (PNG)</span>
             </button>
           </div>
           <div class="col-12 col-md-6">
-            <button type="button" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2" [class.btn-primary]="!isSaved()" [class.view-btn-saved]="isSaved()" (click)="saveContact()" [disabled]="isSaved()">
+            <button type="button" class="btn btn-outline-secondary w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2" (click)="download()">
+              <span class="view-action-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+              <span>Fichier contact (.vcf)</span>
+            </button>
+          </div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <button type="button" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2 btn-primary" [class.view-btn-saved]="isSaved()" (click)="saveContact()" [disabled]="isSaved()">
               <span class="view-action-icon view-action-icon-inverse">
                 @if (isSaved()) {
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/><path d="m22 11v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9"/><path d="m22 11-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 11"/><path d="m16 15 2 2 4-4"/></svg>
