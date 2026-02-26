@@ -71,32 +71,17 @@ export class VcardService {
    * Comportement natif sur mobile : partage vers l’app Contacts (pas de téléchargement de fichier).
    * Sinon ouvre l’invite « Ajouter aux contacts » ou télécharge le .vcf (desktop).
    */
+  /**
+   * Même scénario que qr-business-card : ouvre le vCard pour que le téléphone
+   * affiche directement l'écran « Ajouter aux contacts » (import direct, pas de fichier).
+   */
   addToPhoneContact(card: BusinessCard): void {
-    if (this.isMobile()) {
-      const dataUrl = this.getVCardDataUrl(card);
-      if (dataUrl.length <= 65536) {
-        window.location.href = dataUrl;
-        return;
-      }
-      const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
-      if (this.canShareFile(blob, this.getVCardFileName(card))) {
-        const file = new File([blob], this.getVCardFileName(card), { type: 'text/vcard;charset=utf-8' });
-        navigator.share({ title: card.fullName, text: `${card.title} – ${card.company}`, files: [file] }).catch(() => this.fallbackAddToPhoneContact(blob));
-        return;
-      }
-      this.fallbackAddToPhoneContact(blob);
-    } else {
-      this.downloadVCard(card);
+    const dataUrl = this.getVCardDataUrl(card);
+    if (dataUrl.length <= 65536) {
+      window.location.href = dataUrl;
+      return;
     }
-  }
-
-  private canShareFile(blob: Blob, fileName: string): boolean {
-    if (typeof navigator === 'undefined' || !navigator.share) return false;
-    const file = new File([blob], fileName, { type: blob.type });
-    return navigator.canShare?.({ files: [file] }) ?? false;
-  }
-
-  private fallbackAddToPhoneContact(blob: Blob): void {
+    const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
     window.location.href = URL.createObjectURL(blob);
   }
 
@@ -122,10 +107,5 @@ export class VcardService {
       a.click();
       URL.revokeObjectURL(url);
     }, 'image/png', 1);
-  }
-
-  private isMobile(): boolean {
-    if (typeof navigator === 'undefined') return false;
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator as Navigator & { maxTouchPoints?: number }).maxTouchPoints > 1;
   }
 }
