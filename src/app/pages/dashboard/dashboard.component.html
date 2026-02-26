@@ -7,16 +7,35 @@
       </div>
 
       @if (shareMode()) {
-        <!-- Share mode: big QR only -->
+        <!-- Share mode: QR lien ou QR données contact (enregistrement direct au scan) -->
         <div class="card border-0 shadow rounded-4 p-4 mb-4">
           <div class="text-center mb-4">
             <h2 class="h4 text-slate-900 mb-2">Scannez pour enregistrer</h2>
             <p class="text-slate-600 mb-0">{{ card.fullName }}</p>
             <p class="text-slate-500 small mb-0">{{ card.title }} · {{ card.company }}</p>
           </div>
+          <div class="btn-group w-100 mb-3" role="group">
+            <button type="button" class="btn" [class.btn-primary]="shareQRType() === 'link'" [class.btn-outline-secondary]="shareQRType() !== 'link'" (click)="setShareQRType('link')">
+              QR lien (ouvre la page)
+            </button>
+            <button type="button" class="btn" [class.btn-primary]="shareQRType() === 'vcard'" [class.btn-outline-secondary]="shareQRType() !== 'vcard'" (click)="setShareQRType('vcard')">
+              QR contact direct
+            </button>
+          </div>
+          <p class="small text-slate-500 text-center mb-3">
+            @if (shareQRType() === 'vcard') {
+              Le scan ouvre directement l’écran « Ajouter aux contacts » du téléphone (sans passer par le site).
+            } @else {
+              Le scan ouvre la page de la carte sur le site.
+            }
+          </p>
           <div class="d-flex justify-content-center mb-4">
             <div class="bg-white p-4 rounded-3 shadow">
-              <qrcode [qrdata]="shareUrl()" [width]="280" [errorCorrectionLevel]="'H'" [colorDark]="'#0f172a'"></qrcode>
+              @if (shareQRType() === 'vcard' && shareVCardData()) {
+                <qrcode [qrdata]="shareVCardData()" [width]="280" [errorCorrectionLevel]="'H'" [colorDark]="'#0f172a'"></qrcode>
+              } @else {
+                <qrcode [qrdata]="shareUrl()" [width]="280" [errorCorrectionLevel]="'H'" [colorDark]="'#0f172a'"></qrcode>
+              }
             </div>
           </div>
           <button type="button" class="btn btn-outline-secondary w-100" (click)="toggleShareMode()">

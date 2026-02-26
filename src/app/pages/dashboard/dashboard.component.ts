@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { CardApiService } from '../../services/card-api.service';
 import { ToastService } from '../../services/toast.service';
+import { VcardService } from '../../services/vcard.service';
 import type { BusinessCard } from '../../models/business-card';
 
 @Component({
@@ -16,6 +17,8 @@ export class DashboardComponent implements OnInit {
   myCard = signal<BusinessCard | null>(null);
   copied = signal(false);
   shareMode = signal(false);
+  /** true = QR lien vers la page ; false = QR avec données vCard (enregistrement direct au scan, comme qr-business-card) */
+  shareQRType = signal<'link' | 'vcard'>('link');
 
   shareUrl = computed(() => {
     const card = this.myCard();
@@ -23,10 +26,18 @@ export class DashboardComponent implements OnInit {
     return typeof window !== 'undefined' ? `${window.location.origin}/card/${card.id}` : '';
   });
 
+  /** Données vCard brutes pour le QR : au scan, le téléphone ouvre directement « Ajouter aux contacts » */
+  shareVCardData = computed(() => {
+    const card = this.myCard();
+    if (!card) return '';
+    return this.vcard.getVCardRaw(card);
+  });
+
   constructor(
     private router: Router,
     private cardApi: CardApiService,
-    private toast: ToastService
+    private toast: ToastService,
+    private vcard: VcardService
   ) {}
 
   ngOnInit(): void {
@@ -57,5 +68,9 @@ export class DashboardComponent implements OnInit {
 
   toggleShareMode(): void {
     this.shareMode.update((v) => !v);
+  }
+
+  setShareQRType(type: 'link' | 'vcard'): void {
+    this.shareQRType.set(type);
   }
 }
