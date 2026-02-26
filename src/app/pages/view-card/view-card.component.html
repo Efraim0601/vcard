@@ -60,19 +60,25 @@
         </div>
         <div class="row g-3 mb-4">
           <div class="col-12">
-            <button type="button" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2 btn-primary" [class.view-btn-saved]="isSaved()" (click)="saveContact()" [disabled]="isSaved()">
-              <span class="view-action-icon view-action-icon-inverse">
-                @if (isSaved()) {
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/><path d="m22 11v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9"/><path d="m22 11-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 11"/><path d="m16 15 2 2 4-4"/></svg>
-                } @else {
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/></svg>
-                }
-              </span>
-              <span>{{ isSaved() ? 'Déjà enregistré' : 'Ajouter aux contacts' }}</span>
-            </button>
+            @if (isSaved()) {
+              <button type="button" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2 view-btn-saved" disabled>
+                <span class="view-action-icon view-action-icon-inverse"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/><path d="m22 11v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9"/><path d="m22 11-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 11"/><path d="m16 15 2 2 4-4"/></svg></span>
+                <span>Déjà enregistré</span>
+              </button>
+            } @else if (addToContactsUrl()) {
+              <a [href]="addToContactsUrl()" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2 btn-primary text-decoration-none text-white" (click)="onAddToContactsClick()">
+                <span class="view-action-icon view-action-icon-inverse"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><path d="m22 11-8.97-5.7a1.94 1.94 0 0 0-2.06 0L2 11"/></svg></span>
+                <span>Ajouter aux contacts</span>
+              </a>
+            } @else {
+              <button type="button" class="btn w-100 view-action-btn py-3 d-flex flex-column align-items-center gap-2 btn-outline-secondary" (click)="addToPhoneContact()" [disabled]="!card()">
+                <span class="view-action-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span>
+                <span>Ajouter aux contacts</span>
+              </button>
+            }
           </div>
         </div>
-        <p class="text-center text-slate-500 small mb-0 mt-2">Sur mobile : le fichier .vcf s’ouvre pour ajouter le contact à votre téléphone (sans téléchargement).</p>
+        <p class="text-center text-slate-500 small mb-0 mt-2">Un clic ouvre directement l'écran « Ajouter aux contacts » du téléphone (pas de téléchargement de fichier).</p>
       }
 
       @if (isPreview()) {

@@ -33,13 +33,18 @@ export class VcardService {
   }
 
   /**
-   * Retourne une data URL du vCard (comme qr-business-card).
-   * Sur mobile, ouvrir cette URL ouvre directement l'écran « Ajouter aux contacts » sans fichier.
+   * Data URL du vCard pour un lien direct (pas de téléchargement).
+   * Le lien doit être un <a href="..."> sans attribut download pour que l'OS ouvre « Ajouter aux contacts ».
    */
   getVCardDataUrl(card: BusinessCard): string {
     const vcard = '\ufeff' + this.generateVCard(card);
     const base64 = btoa(unescape(encodeURIComponent(vcard)));
     return `data:text/vcard;charset=utf-8;base64,${base64}`;
+  }
+
+  /** Retourne true si la data URL est utilisable dans un lien (taille raisonnable). */
+  isDataUrlSafeForLink(card: BusinessCard): boolean {
+    return this.getVCardDataUrl(card).length <= 65536;
   }
 
   /**
@@ -77,12 +82,7 @@ export class VcardService {
    */
   addToPhoneContact(card: BusinessCard): void {
     const dataUrl = this.getVCardDataUrl(card);
-    if (dataUrl.length <= 65536) {
-      window.location.href = dataUrl;
-      return;
-    }
-    const blob = new Blob(['\ufeff' + this.generateVCard(card)], { type: 'text/vcard;charset=utf-8' });
-    window.location.href = URL.createObjectURL(blob);
+    if (dataUrl.length <= 65536) window.location.href = dataUrl;
   }
 
   /**

@@ -24,6 +24,13 @@ export class ViewCardComponent implements OnInit {
   route = inject(ActivatedRoute);
   isPreview = computed(() => this.route.snapshot.queryParamMap.get('preview') === 'true');
 
+  /** Lien direct vers le vCard (data URL) : au clic, l'OS ouvre « Ajouter aux contacts » sans télécharger de fichier. */
+  addToContactsUrl = computed(() => {
+    const c = this.card();
+    if (!c || this.isSaved()) return '';
+    return this.vcard.isDataUrlSafeForLink(c) ? this.vcard.getVCardDataUrl(c) : '';
+  });
+
   constructor(
     private router: Router,
     private cardApi: CardApiService,
@@ -55,29 +62,20 @@ export class ViewCardComponent implements OnInit {
     });
   }
 
-  saveContact(): void {
+  /** Fallback quand la data URL est trop longue : ouvre le vCard (sans blob). */
+  addToPhoneContact(): void {
     const c = this.card();
-    if (!c) {
-      this.toast.error('Carte non chargée. Réessayez.');
-      return;
-    }
-    if (this.isSaved()) {
-      this.toast.info('Ce contact est déjà enregistré');
-      return;
-    }
-    this.toast.info('Enregistrement en cours...');
+    if (c) this.vcard.addToPhoneContact(c);
+  }
+
+  /** Enregistre le contact dans l'app (backend) ; appelé au clic sur le lien « Ajouter aux contacts » avant navigation. */
+  onAddToContactsClick(): void {
+    const c = this.card();
+    if (!c || this.isSaved()) return;
     this.cardApi.saveContact(c.id).subscribe({
-      next: () => {
-        this.isSaved.set(true);
-        this.toast.success('Contact enregistré dans l\'app.');
-      },
-      error: () => this.toast.error('Erreur lors de l\'enregistrement dans l\'app.'),
+      next: () => this.isSaved.set(true),
+      error: () => {},
     });
-    try {
-      this.vcard.addToPhoneContact(c);
-    } catch (e) {
-      this.toast.error('Impossible d\'ouvrir l\'ajout au répertoire.');
-    }
   }
 
   download(): void {
