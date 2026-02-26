@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CardApiService } from '../../services/card-api.service';
 import { ToastService } from '../../services/toast.service';
 import { CardPreviewComponent } from '../../components/card-preview/card-preview.component';
@@ -106,7 +107,15 @@ export class CreateCardComponent implements OnInit {
         this.toast.success(isEditing ? 'Carte mise à jour avec succès' : 'Carte créée avec succès');
         this.router.navigate(['/dashboard']);
       },
-      error: () => this.toast.error('Erreur lors de l\'enregistrement'),
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 0) {
+          this.toast.error('Impossible de joindre le serveur. Vérifiez que le backend est démarré et que l\'URL est correcte.');
+        } else if (err.status === 502 || err.status === 503) {
+          this.toast.error('Service temporairement indisponible. Réessayez dans quelques secondes.');
+        } else {
+          this.toast.error(err.error?.message || 'Erreur lors de l\'enregistrement.');
+        }
+      },
     });
   }
 

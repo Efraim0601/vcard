@@ -13,7 +13,8 @@ COPY package*.json ./
 RUN for i in 1 2 3; do npm ci && break || { [ $i -eq 3 ] && exit 1; sleep 10; }; done
 
 COPY . .
-RUN npm run build
+# Build production pour que apiBaseUrl soit '' et que les appels aillent vers /api (proxy nginx)
+RUN npm run build -- --configuration=production
 
 # Run stage: nginx
 FROM nginx:alpine

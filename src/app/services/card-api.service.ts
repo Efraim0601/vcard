@@ -8,10 +8,11 @@ import type { BusinessCard, SavedContact } from '../models/business-card';
 const OWNER_TOKEN_KEY = 'vcard_owner_token';
 const DEVICE_ID_KEY = 'vcard_device_id';
 
+/** Base URL des endpoints API. En prod (Docker) = '' → appels vers /api (même origine, proxy nginx). */
 @Injectable({ providedIn: 'root' })
 export class CardApiService {
   private readonly baseUrl = environment.apiBaseUrl
-    ? `${environment.apiBaseUrl}/api`
+    ? `${environment.apiBaseUrl.replace(/\/$/, '')}/api`
     : '/api';
 
   constructor(private http: HttpClient) {}
