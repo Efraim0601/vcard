@@ -103,9 +103,14 @@ export class VcardService {
     }
   }
 
+  /**
+   * Ouvre le vCard en utilisant exactement les mêmes données brutes que le QR « contact direct ».
+   * Le navigateur peut proposer l'ajout au carnet d'adresses ou un téléchargement selon l'OS.
+   */
   addToPhoneContact(card: BusinessCard): void {
-    const dataUrl = this.getVCardDataUrl(card);
-    if (dataUrl.length <= 65536) window.location.href = dataUrl;
+    const raw = this.getVCardRaw(card);
+    const dataUrl = `data:text/vcard;charset=utf-8,${encodeURIComponent(raw)}`;
+    window.location.href = dataUrl;
   }
 
   /**

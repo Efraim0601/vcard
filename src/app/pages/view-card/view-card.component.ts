@@ -70,8 +70,7 @@ export class ViewCardComponent implements OnInit {
         next: () => this.isSaved.set(true),
         error: () => {},
       });
-      const shared = await this.vcard.shareVCard(c);
-      if (!shared) this.vcard.addToPhoneContact(c);
+      this.vcard.addToPhoneContact(c);
     } finally {
       this.addingContact.set(false);
     }
