@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { CardPreviewComponent } from '../../components/card-preview/card-preview.component';
 import { CardApiService } from '../../services/card-api.service';
 import { ToastService } from '../../services/toast.service';
 import { VcardService } from '../../services/vcard.service';
@@ -9,7 +10,7 @@ import type { BusinessCard } from '../../models/business-card';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, QRCodeComponent],
+  imports: [RouterLink, QRCodeComponent, CardPreviewComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -18,7 +19,7 @@ export class DashboardComponent implements OnInit {
   copied = signal(false);
   shareMode = signal(false);
   /** true = QR lien vers la page ; false = QR avec données vCard (enregistrement direct au scan, comme qr-business-card) */
-  shareQRType = signal<'link' | 'vcard'>('link');
+  shareQRType = signal<'link' | 'vcard'>('vcard');
 
   shareUrl = computed(() => {
     const card = this.myCard();

@@ -58,8 +58,9 @@ export class ViewCardComponent implements OnInit {
   }
 
   /**
-   * Ajouter aux contacts : privilégie le partage (menu système → Contacts) pour éviter
-   * le téléchargement et l'alerte « Impossible de télécharger le fichier de façon sécurisée ».
+   * Ajouter aux contacts : enregistre dans l'app puis télécharge directement
+   * l'image de la carte de visite sur le téléphone (même résultat que le scan
+   * pour garder la carte dans la galerie).
    */
   async addToContacts(): Promise<void> {
     const c = this.card();
@@ -70,7 +71,7 @@ export class ViewCardComponent implements OnInit {
         next: () => this.isSaved.set(true),
         error: () => {},
       });
-      this.vcard.addToPhoneContact(c);
+      await this.downloadCardImage();
     } finally {
       this.addingContact.set(false);
     }
