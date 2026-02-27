@@ -24,8 +24,8 @@ export class ViewCardComponent implements OnInit {
   route = inject(ActivatedRoute);
   isPreview = computed(() => this.route.snapshot.queryParamMap.get('preview') === 'true');
 
-  addingContact = signal(false);
   private autoMode = false;
+  private autoDone = false;
 
   constructor(
     private router: Router,
@@ -50,10 +50,9 @@ export class ViewCardComponent implements OnInit {
         } else {
           this.card.set(found);
           this.cardApi.isContactSaved(id).subscribe((saved) => this.isSaved.set(saved));
-          // Si le lien a été ouvert via le QR "lien auto", on lance automatiquement
-          // l'action "Ajouter aux contacts" (enregistrement + téléchargement image).
-          if (this.autoMode && !this.isPreview()) {
-            setTimeout(() => this.addToContacts(), 600);
+          if (this.autoMode && !this.isPreview() && !this.autoDone) {
+            this.autoDone = true;
+            this.runAutoFlow();
           }
         }
         this.loading.set(false);
@@ -66,28 +65,19 @@ export class ViewCardComponent implements OnInit {
   }
 
   /**
-   * Ajouter aux contacts : enregistre dans l'app puis télécharge directement
-   * l'image de la carte de visite sur le téléphone (même résultat que le scan
-   * pour garder la carte dans la galerie).
+   * Flux auto (QR lien avec ?auto=1) : enregistre le contact puis télécharge
+   * l'image de la carte une fois la vue rendue.
    */
-  async addToContacts(): Promise<void> {
+  private runAutoFlow(): void {
     const c = this.card();
-    if (!c || this.isSaved()) return;
-    this.addingContact.set(true);
-    try {
-      this.cardApi.saveContact(c.id).subscribe({
-        next: () => this.isSaved.set(true),
-        error: () => {},
-      });
-      await this.downloadCardImage();
-    } finally {
-      this.addingContact.set(false);
-    }
-  }
-
-  addToPhoneContact(): void {
-    const c = this.card();
-    if (c) this.vcard.addToPhoneContact(c);
+    if (!c) return;
+    this.cardApi.saveContact(c.id).subscribe({
+      next: () => this.isSaved.set(true),
+      error: () => {},
+    });
+    this.toast.info('Téléchargement de la carte...');
+    // Attendre que le DOM (cardPreviewBox) soit rendu avant d'exporter l'image
+    setTimeout(() => this.downloadCardImage(), 1200);
   }
 
   download(): void {
