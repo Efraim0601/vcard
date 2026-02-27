@@ -24,7 +24,10 @@ export class DashboardComponent implements OnInit {
   shareUrl = computed(() => {
     const card = this.myCard();
     if (!card) return '';
-    return typeof window !== 'undefined' ? `${window.location.origin}/card/${card.id}` : '';
+    if (typeof window === 'undefined') return '';
+    const base = `${window.location.origin}/card/${card.id}`;
+    // Le lien intègre auto=1 pour lancer automatiquement le flux d'ajout/contact à l'ouverture.
+    return `${base}?auto=1`;
   });
 
   /** Données vCard brutes pour le QR : au scan, le téléphone ouvre directement « Ajouter aux contacts » */

@@ -25,6 +25,7 @@ export class ViewCardComponent implements OnInit {
   isPreview = computed(() => this.route.snapshot.queryParamMap.get('preview') === 'true');
 
   addingContact = signal(false);
+  private autoMode = false;
 
   constructor(
     private router: Router,
@@ -35,6 +36,8 @@ export class ViewCardComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    const autoParam = this.route.snapshot.queryParamMap.get('auto');
+    this.autoMode = autoParam === '1' || autoParam === 'true';
     if (!id) {
       this.error.set(true);
       this.loading.set(false);
@@ -47,6 +50,11 @@ export class ViewCardComponent implements OnInit {
         } else {
           this.card.set(found);
           this.cardApi.isContactSaved(id).subscribe((saved) => this.isSaved.set(saved));
+          // Si le lien a été ouvert via le QR "lien auto", on lance automatiquement
+          // l'action "Ajouter aux contacts" (enregistrement + téléchargement image).
+          if (this.autoMode && !this.isPreview()) {
+            setTimeout(() => this.addToContacts(), 600);
+          }
         }
         this.loading.set(false);
       },
